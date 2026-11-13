@@ -1,0 +1,38 @@
+{# extends převezme společný vzhled, menu a patičku ze souboru base.html. #}
+{% extends 'base.html' %}
+{# block označuje část společné šablony, kterou tato stránka nahrazuje. #}
+{% block title %}
+  Přihlášení | PokéApp
+{% endblock %}
+{# Prázdný blok schová velký úvodní banner na přihlašovací stránce. #}
+{% block header %}
+{% endblock %}
+{% block content %}
+  <section class="container auth-section">
+    <div class="auth-card">
+      <div class="eyebrow">TVÉ DALŠÍ DOBRODRUŽSTVÍ</div>
+      <h1>Přihlášení trenéra</h1>
+      <p>Přihlas se svým e-mailem nebo přezdívkou.</p>
+      {# error posílá funkce login z auth/routes.py. Hláška se zobrazí jen při chybě. #}
+      {% if error %}
+        <div class="alert alert-danger" role="alert">{{ error }}</div>
+      {% endif %}
+      {# POST odešle údaje do funkce login. url_for sestaví její adresu. #}
+      <form method="post" action="{{ url_for('auth.login') }}">
+        {# Skrytý kontrolní kód chrání před podvrženým odesláním formuláře. #}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {# for a id propojují popisek s polem. name je klíč pro request.form v Pythonu. #}
+        <label for="identity">E-mail nebo přezdívka</label>
+        <input class="form-control" id="identity" name="identity" value="{{ identity }}" autocomplete="username" required autofocus>
+        {# type=password skryje znaky. Heslo po chybě do formuláře nevracíme. #}
+        <label for="password">Heslo</label>
+        <input class="form-control" type="password" id="password" name="password" autocomplete="current-password" required>
+        {# submit odešle formulář. required výše vyžaduje vyplnění polí. #}
+        <button class="primary-action" type="submit">
+          Přihlásit se <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </button>
+      </form>
+      <a href="{{ url_for('index') }}">Zpět na Pokédex</a>
+    </div>
+  </section>
+{% endblock %}

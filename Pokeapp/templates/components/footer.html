@@ -1,0 +1,23 @@
+<!-- PATIČKA: informace a navigace -->
+{# Společná patička: značka, odkazy, autorství a informace o fanouškovském projektu. #}
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-main">
+      <div><a class="brand" href="{{ url_for('index') }}#home"><span class="brand-ball"><span></span></span><span>POKÉ<span class="accent">APP</span><small>YOUR POKÉMON UNIVERSE</small></span></a>
+        <p>Fanouškovský projekt pro všechny trenéry a objevitele Pokémon světa.</p>
+      </div>
+      {# Tyto odkazy znovu míří na ID sekcí domovské stránky. #}
+      <div class="footer-nav"><a href="{{ url_for('index') }}#home">Domů</a><a href="{{ url_for('index') }}#pokedex">Pokédex</a><a href="{{ url_for('index') }}#explore">Objevovat</a>
+        {% if current_user %}
+          <span>Přihlášený trenér: {{ current_user.nickname }}</span>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Přihlásit se</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="footer-base"><span>© 2026 PokéApp · Fanouškovský projekt</span><span>Vytvořeno pomocí Flask · Jinja2 · Bootstrap 5</span>
+    </div>
+    {# Text o právech je běžný obsah patičky, nikoli programová funkce. #}
+    <p class="legal">Pokémon a související postavy jsou vlastnictvím příslušných držitelů práv. Neoficiální fanouškovský web.</p>
+  </div>
+</footer>

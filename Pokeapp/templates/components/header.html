@@ -1,0 +1,49 @@
+<!-- HEADER: vrstvený hero banner s Pokémony -->
+<header class="hero" id="home">
+  <div class="hero-lines" aria-hidden="true">
+  </div>
+  <div class="container hero-layout">
+    {# reveal propojí tento blok s animací při scrollování v effects.js. #}
+    <div class="hero-copy reveal">
+      <div class="eyebrow"><span class="live-dot"></span> VSTUP DO POKÉMON UNIVERZA <i class="bi bi-stars"></i>
+      </div>
+      <h1>Tvůj svět.<br>Tvá cesta.<br><span class="gradient-text">Tvoji Pokémoni.</span>
+      </h1>
+      <p>Vydej se na dobrodružství mezi legendární Pokémony. Poznávej jejich typy, schopnosti a evoluce – všechno na jednom místě.</p>
+      {# Tlačítka jsou odkazy na sekce, nejde o samostatné Flask stránky. #}
+      <div class="hero-actions"><a class="primary-action" href="#pokedex"><i class="bi bi-compass"></i> Prozkoumat Pokédex <i class="bi bi-arrow-right"></i></a><a class="secondary-action" href="#explore"><i class="bi bi-play-circle"></i> Objevovat svět</a>
+      </div>
+      {# Tyto údaje jsou obecné statické texty, nikoli počet záznamů v ukázkovém seznamu. #}
+      <div class="hero-metrics">
+        <div><strong>1000<span>+</span></strong><small>Pokémonů ve světě</small>
+        </div>
+        <div><strong>18</strong><small>Unikátních typů</small>
+        </div>
+        <div><strong>∞</strong><small>Možností objevovat</small>
+        </div>
+      </div>
+    </div>
+    {# Ilustrace skládá CSS kruhy, Pokéball, dva obrázky a informační štítky. #}
+    <div class="hero-art reveal" aria-label="Ilustrace Pikachu a Charizarda">
+      <div class="art-ring ring-outer">
+      </div>
+      <div class="art-ring ring-inner">
+      </div>
+      <div class="art-pokeball" aria-hidden="true"><span></span>
+      </div>
+      {# Obrázky se načítají z PokeAPI sprites podle čísla Pokédexu; z-index určí překrytí. #}
+      <img class="hero-charizard" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" alt="Charizard">
+      <img class="hero-pikachu" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu">
+      <div class="hero-info info-electric"><i class="bi bi-lightning-charge-fill"></i><span><small>POKÉMON #025</small><strong>PIKACHU</strong></span>
+      </div>
+      <div class="hero-info info-fire"><i class="bi bi-fire"></i><span><small>TYPE</small><strong>FIRE / FLYING</strong></span>
+      </div>
+      <div class="art-spark spark-one">✦
+      </div>
+      <div class="art-spark spark-two">✧
+      </div>
+    </div>
+  </div>
+  <div class="hero-bottom"><span>SCROLL TO EXPLORE</span><i class="bi bi-arrow-down"></i><span>GOTTA CATCH 'EM ALL</span>
+  </div>
+</header>

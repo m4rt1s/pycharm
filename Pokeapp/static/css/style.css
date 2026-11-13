@@ -1,0 +1,1494 @@
+
+/* =============================================================
+   POKÉAPP — JEDINÝ CSS SOUBOR
+   01 Variables | 02 Background | 03 Navigation | 04 Hero
+   05 Pokédex | 06 Features | 07 Footer | 08 Responsive
+   ============================================================= */
+
+
+/* 01 — Design tokens */
+
+/* Sdílené CSS proměnné. Změna --yellow upraví hlavní akcent v celém webu. */
+:root {
+    --bg:#080e20;
+    --surface:#101a32;
+    --surface-2:#17233e;
+    --line:rgba(180,202,255,.12);
+    --text:#f5f7ff;
+    --muted:#9baac9;
+    --yellow:#ffce37;
+    --blue:#629cff;
+    --radius:22px;
+}
+
+/* border-box započítá padding a rámeček do nastavené šířky prvku. */
+* {
+    box-sizing:border-box;
+}
+
+/* Plynulé přesuny k #pokedex; odsazení zabrání překrytí cíle sticky navigací. */
+html {
+    scroll-behavior:smooth;
+    scroll-padding-top:96px;
+}
+
+/* Základní pozadí a písmo. Vodorovný přesah dekorací se skryje. */
+body {
+    margin:0;
+    background:#070c19;
+    color:var(--text);
+    font-family:Inter,sans-serif;
+    overflow-x:hidden;
+}
+
+h1,h2,h3,.brand {
+    font-family:Outfit,sans-serif;
+}
+
+a {
+    text-decoration:none;
+}
+
+button,input {
+    font:inherit;
+}
+
+::selection {
+    background:var(--yellow);
+    color:#0a1020;
+}
+
+button:focus-visible,a:focus-visible,input:focus-visible {
+    outline:3px solid var(--yellow);
+    outline-offset:3px;
+}
+
+/* Hlavní obal je nad dekorativním pozadím díky position a z-index. */
+.site-shell {
+    position:relative;
+    z-index:1;
+    max-width:1480px;
+    margin:0 auto;
+    min-height:100vh;
+    background:linear-gradient(160deg,rgba(12,20,41,.9),rgba(8,14,32,.95));
+    border-left:1px solid rgba(255,255,255,.05);
+    border-right:1px solid rgba(255,255,255,.05);
+    box-shadow:0 0 110px rgba(0,0,0,.28);
+}
+
+/* Společné svislé mezery sekcí; na menších displejích je media queries sníží. */
+.section-pad {
+    padding:110px 0;
+}
+
+.accent {
+    color:var(--yellow);
+}
+
+
+/* 02 — ŽIVÉ POZADÍ: samočinná aurora, mřížka, hvězdy, kurzor */
+
+/* Vrstva přes celé okno. pointer-events:none nechá klikání projít k obsahu. */
+.world-background {
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+    background:radial-gradient(ellipse at 50% 0%,#15284d 0%,#080e20 58%,#050915 100%);
+}
+
+/* Rozmazané barevné kruhy vytvářejí atmosféru; transform animuje jejich polohu. */
+.aurora {
+    position:absolute;
+    width:75vw;
+    height:75vw;
+    min-width:700px;
+    min-height:700px;
+    border-radius:50%;
+    filter:blur(90px);
+    opacity:.38;
+    will-change:transform;
+}
+
+.aurora-a {
+    top:-40%;
+    left:-20%;
+    background:radial-gradient(circle,#264d9b,transparent 65%);
+    animation:auroraOne 23s ease-in-out infinite alternate;
+}
+
+.aurora-b {
+    right:-30%;
+    bottom:-65%;
+    background:radial-gradient(circle,#6145a0,transparent 65%);
+    animation:auroraTwo 29s ease-in-out infinite alternate;
+}
+
+/* Dvě sady gradientů tvoří mřížku; maska zeslabuje její horní a dolní okraj. */
+.world-grid {
+    position:absolute;
+    inset:0;
+    background-image:linear-gradient(rgba(143,172,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(143,172,238,.035) 1px,transparent 1px);
+    background-size:75px 75px;
+    mask-image:linear-gradient(to bottom,transparent,#000 20%,#000 75%,transparent);
+    animation:gridShift 38s linear infinite;
+}
+
+/* Záře má 550 px. JavaScript odečítá 275 px, aby střed sledoval kurzor. */
+.cursor-glow {
+    position:absolute;
+    width:550px;
+    height:550px;
+    left:0;
+    top:0;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,206,55,.12),rgba(73,120,236,.055) 35%,transparent 70%);
+    transform:translate3d(-1000px,-1000px,0);
+    will-change:transform;
+}
+
+/* Dekorativní kruhy. ::after vykreslí jejich střed bez dalšího HTML prvku. */
+.floating-orb {
+    position:absolute;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:50%;
+    box-shadow:inset 0 0 30px rgba(255,255,255,.025);
+    animation:orbFloat 18s ease-in-out infinite alternate;
+}
+
+.floating-orb::after {
+    content:'';
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:24%;
+    height:24%;
+    border:2px solid rgba(255,255,255,.08);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+}
+
+.orb-a {
+    width:260px;
+    height:260px;
+    left:3%;
+    top:18%;
+}
+
+.orb-b {
+    width:390px;
+    height:390px;
+    right:-7%;
+    top:45%;
+    animation-delay:-9s;
+}
+
+.orb-c {
+    width:130px;
+    height:130px;
+    left:20%;
+    bottom:7%;
+    animation-delay:-4s;
+}
+
+.particle-field {
+    position:absolute;
+    inset:0;
+}
+
+/* JavaScript doplní hvězdy a jejich --duration a --delay; CSS zajišťuje pohyb. */
+.particle {
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#d7e6ff;
+    opacity:0;
+    box-shadow:0 0 10px rgba(161,190,255,.65);
+    animation:particleRise var(--duration) linear infinite;
+    animation-delay:var(--delay);
+}
+
+/* Keyframes popisují fáze animace; to odpovídá jejímu konci. */
+@keyframes auroraOne {
+    to {
+        transform:translate(32vw,24vh) scale(1.25) rotate(30deg);
+    }
+}
+
+@keyframes auroraTwo {
+    to {
+        transform:translate(-30vw,-22vh) scale(.9) rotate(-25deg);
+    }
+}
+
+@keyframes gridShift {
+    to {
+        background-position:75px 75px;
+    }
+}
+
+@keyframes orbFloat {
+    to {
+        transform:translate(60px,-90px) rotate(35deg);
+    }
+}
+
+/* Částice při stoupání postupně zesílí a zase zmizí; cyklus se opakuje. */
+@keyframes particleRise {
+    0% {
+        transform:translateY(60px);
+        opacity:0;
+    }
+    15% {
+        opacity:.6;
+    }
+    85% {
+        opacity:.6;
+    }
+    100% {
+        transform:translateY(-160px);
+        opacity:0;
+    }
+}
+
+
+/* 03 — NAVIGACE */
+
+/* Sticky menu zůstává při scrollování nahoře; blur rozmazává obsah za ním. */
+.site-nav {
+    position:sticky;
+    top:0;
+    z-index:100;
+    padding:18px 0;
+    background:rgba(10,17,35,.83);
+    backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--line);
+}
+
+.brand {
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    color:#fff;
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:-1px;
+    line-height:1;
+}
+
+.brand:hover {
+    color:#fff;
+}
+
+.brand small {
+    display:block;
+    color:#8092b8;
+    font:700 8px Inter,sans-serif;
+    letter-spacing:2.1px;
+    margin-top:7px;
+}
+
+/* Pokéball loga je nakreslený gradientem, rámečkem a vnitřním span. */
+.brand-ball {
+    position:relative;
+    display:inline-block;
+    flex:none;
+    width:42px;
+    height:42px;
+    border:3px solid #10192c;
+    border-radius:50%;
+    background:linear-gradient(#ff625a 0 45%,#10192c 45% 55%,#f7faff 55%);
+    box-shadow:0 0 0 2px rgba(255,255,255,.12),0 0 30px rgba(255,206,55,.12);
+}
+
+.brand-ball span {
+    position:absolute;
+    width:14px;
+    height:14px;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    border:3px solid #111b31;
+    border-radius:50%;
+    background:#fff;
+}
+
+.nav-links {
+    gap:22px;
+}
+
+.site-nav .nav-link {
+    font-size:13px;
+    font-weight:700;
+    color:#a4b1cf!important;
+    transition:color .2s;
+}
+
+.site-nav .nav-link:hover,.site-nav .nav-link.active {
+    color:var(--yellow)!important;
+}
+
+.nav-action {
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 19px;
+    border-radius:12px;
+    background:var(--yellow);
+    color:#10162b;
+    font-size:12px;
+    font-weight:800;
+    box-shadow:0 8px 30px rgba(255,206,55,.13);
+    transition:transform .25s,box-shadow .25s;
+}
+
+.nav-action:hover {
+    color:#10162b;
+    transform:translateY(-3px);
+    box-shadow:0 12px 38px rgba(255,206,55,.25);
+}
+
+.nav-toggle {
+    color:#fff;
+    border:1px solid var(--line);
+    font-size:26px;
+}
+
+
+/* 04 — HERO / POKÉMON ART */
+
+/* Úvodní banner. isolation vytvoří vlastní kontext vrstev pro jeho dekorace. */
+.hero {
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    min-height:740px;
+    background:radial-gradient(ellipse at 76% 38%,rgba(42,84,156,.24),transparent 44%),linear-gradient(135deg,rgba(21,37,72,.92),rgba(10,18,38,.72));
+    border-bottom:1px solid var(--line);
+}
+
+.hero::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 85% 30%,rgba(255,204,52,.08),transparent 32%);
+    animation:heroPulse 9s ease-in-out infinite alternate;
+}
+
+.hero-lines {
+    position:absolute;
+    inset:0;
+    opacity:.18;
+    background:repeating-linear-gradient(125deg,transparent 0 75px,rgba(120,155,235,.09) 76px 77px,transparent 78px 155px);
+    animation:heroLines 35s linear infinite;
+}
+
+/* CSS Grid rozdělí banner na text a ilustraci; na mobilu přejde na jeden sloupec. */
+.hero-layout {
+    position:relative;
+    display:grid;
+    grid-template-columns:1.08fr 1fr;
+    align-items:center;
+    gap:30px;
+    min-height:690px;
+    padding-top:85px;
+    padding-bottom:85px;
+}
+
+.hero-copy {
+    position:relative;
+    z-index:3;
+}
+
+.eyebrow,.section-kicker {
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    color:var(--yellow);
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:2px;
+}
+
+.eyebrow {
+    padding:12px 17px;
+    border:1px solid rgba(255,206,55,.25);
+    background:rgba(255,206,55,.075);
+    border-radius:100px;
+    margin-bottom:29px;
+}
+
+.live-dot {
+    width:8px;
+    height:8px;
+    background:#ffda5a;
+    border-radius:50%;
+    box-shadow:0 0 0 5px rgba(255,206,55,.13);
+    animation:livePulse 2s infinite;
+}
+
+.hero h1 {
+    font-weight:900;
+    letter-spacing:-3.6px;
+    line-height:1.06;
+    font-size:clamp(48px,5.1vw,78px);
+    margin:0 0 25px;
+}
+
+/* Gradient se ořízne na tvar písmen; průhledná barva textu jej nechá vyniknout. */
+.gradient-text {
+    background:linear-gradient(100deg,#ffdc70,#ffbb32 60%,#fff0ac);
+    background-clip:text;
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero-copy>p {
+    max-width:530px;
+    color:#a9b9d7;
+    line-height:1.9;
+    font-size:15px;
+    margin-bottom:35px;
+}
+
+.hero-actions {
+    display:flex;
+    gap:13px;
+    flex-wrap:wrap;
+}
+
+.primary-action,.secondary-action {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    border-radius:13px;
+    padding:17px 22px;
+    font-weight:800;
+    font-size:13px;
+    transition:transform .25s,background .25s,box-shadow .25s;
+}
+
+.primary-action {
+    background:linear-gradient(120deg,#ffda61,#ffc53a);
+    color:#11192b;
+    box-shadow:0 15px 38px rgba(255,194,45,.17);
+}
+
+.primary-action:hover {
+    color:#11192b;
+    transform:translateY(-4px);
+    box-shadow:0 18px 45px rgba(255,194,45,.28);
+}
+
+.secondary-action {
+    color:#edf2ff;
+    border:1px solid rgba(200,216,255,.2);
+    background:rgba(255,255,255,.035);
+}
+
+.secondary-action:hover {
+    color:#fff;
+    background:rgba(255,255,255,.1);
+    transform:translateY(-4px);
+}
+
+.hero-metrics {
+    display:flex;
+    gap:38px;
+    flex-wrap:wrap;
+    margin-top:52px;
+    padding-top:29px;
+    border-top:1px solid var(--line);
+}
+
+.hero-metrics>div {
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.hero-metrics strong {
+    font:900 29px Outfit,sans-serif;
+}
+
+.hero-metrics strong span {
+    color:var(--yellow);
+}
+
+.hero-metrics small {
+    font-size:11px;
+    color:#899bbb;
+}
+
+/* Relativní obal je referenční plochou pro absolutně umístěné Pokémony. */
+.hero-art {
+    position:relative;
+    height:520px;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    isolation:isolate;
+}
+
+/* Kruhy v ilustraci se pomalu otáčejí, i když uživatel nehýbe myší. */
+.art-ring {
+    position:absolute;
+    border:1px solid rgba(255,209,72,.17);
+    border-radius:50%;
+    aspect-ratio:1;
+    animation:slowSpin 45s linear infinite;
+}
+
+.ring-outer {
+    width:96%;
+    max-width:510px;
+    border-style:dashed;
+}
+
+.ring-inner {
+    width:72%;
+    max-width:390px;
+    border:2px solid rgba(115,160,255,.15);
+    animation-direction:reverse;
+}
+
+.art-pokeball {
+    position:absolute;
+    width:360px;
+    height:360px;
+    border-radius:50%;
+    opacity:.15;
+    transform:rotate(-25deg);
+    background:linear-gradient(#ff5b59 0 46%,#0b1227 46% 54%,#f5faff 54%);
+    box-shadow:0 0 90px rgba(255,206,55,.14);
+}
+
+.art-pokeball span {
+    position:absolute;
+    width:95px;
+    height:95px;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    border:18px solid #0b1227;
+    border-radius:50%;
+    background:#fff;
+}
+
+/* Obrázky si zachovají proporce díky object-fit; drop-shadow sleduje jejich obrys. */
+.hero-pikachu,.hero-charizard {
+    position:absolute;
+    object-fit:contain;
+    filter:drop-shadow(0 25px 30px rgba(0,0,0,.35));
+    animation:heroFloat 6s ease-in-out infinite;
+    max-width:none;
+}
+
+.hero-pikachu {
+    width:75%;
+    max-width:410px;
+    z-index:2;
+    left:0;
+    bottom:18px;
+}
+
+.hero-charizard {
+    width:74%;
+    max-width:390px;
+    right:-1%;
+    top:8px;
+    z-index:1;
+    opacity:.92;
+    animation-delay:-2.5s;
+}
+
+/* Poloprůhledné informační štítky plují podle heroFloat. */
+.hero-info {
+    position:absolute;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 17px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(18,30,57,.8);
+    backdrop-filter:blur(18px);
+    border-radius:15px;
+    box-shadow:0 15px 35px rgba(0,0,0,.2);
+    animation:heroFloat 7s ease-in-out infinite;
+}
+
+.hero-info i {
+    font-size:24px;
+}
+
+.hero-info span {
+    display:flex;
+    flex-direction:column;
+    gap:3px;
+}
+
+.hero-info small {
+    font-size:9px;
+    letter-spacing:1.5px;
+    color:#a4b4d0;
+}
+
+.hero-info strong {
+    font:800 13px Outfit,sans-serif;
+}
+
+.info-electric {
+    left:0;
+    top:55px;
+}
+
+.info-electric i {
+    color:var(--yellow);
+}
+
+.info-fire {
+    right:0;
+    bottom:45px;
+    animation-delay:-3s;
+}
+
+.info-fire i {
+    color:#ff866b;
+}
+
+.art-spark {
+    position:absolute;
+    font-size:30px;
+    color:#ffdb70;
+    animation:twinkle 4s infinite;
+}
+
+.spark-one {
+    right:12%;
+    top:5%;
+}
+
+.spark-two {
+    left:12%;
+    bottom:10%;
+    animation-delay:-2s;
+}
+
+.hero-bottom {
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px max(4%,calc((100% - 1320px)/2));
+    border-top:1px solid rgba(255,255,255,.05);
+    color:#6f83a8;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:2.2px;
+}
+
+.hero-bottom i {
+    color:var(--yellow);
+    font-size:18px;
+    animation:arrowBounce 2s infinite;
+}
+
+@keyframes heroFloat {
+    50% {
+        transform:translateY(-19px);
+    }
+}
+
+@keyframes slowSpin {
+    to {
+        transform:rotate(360deg);
+    }
+}
+
+@keyframes heroPulse {
+    to {
+        opacity:.3;
+        transform:scale(1.15);
+    }
+}
+
+@keyframes heroLines {
+    to {
+        background-position:200px 0;
+    }
+}
+
+@keyframes livePulse {
+    50% {
+        box-shadow:0 0 0 10px rgba(255,206,55,0);
+    }
+}
+
+@keyframes twinkle {
+    50% {
+        opacity:.2;
+        transform:scale(.7);
+    }
+}
+
+@keyframes arrowBounce {
+    50% {
+        transform:translateY(6px);
+    }
+}
+
+
+/* 05 — POKÉDEX / FILTRY / KARTY */
+
+.pokedex-section {
+    position:relative;
+    background:linear-gradient(180deg,rgba(10,17,35,.96),rgba(12,21,42,.94));
+}
+
+.section-top {
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    gap:30px;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+}
+
+.section-kicker {
+    margin-bottom:16px;
+}
+
+.section-kicker span {
+    color:#fff;
+    background:rgba(255,255,255,.1);
+    padding:6px 9px;
+    border-radius:6px;
+}
+
+.section-top h2 {
+    font-size:clamp(34px,4vw,53px);
+    font-weight:900;
+    letter-spacing:-1.8px;
+    margin-bottom:10px;
+}
+
+.section-top h2 em {
+    font-style:normal;
+    color:var(--yellow);
+}
+
+.section-top p {
+    color:var(--muted);
+    font-size:14px;
+    margin:0;
+}
+
+/* Flex zarovná ikonu, vstup a klávesovou nápovědu do jednoho řádku. */
+.pokedex-search {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:min(100%,355px);
+    padding:14px 16px;
+    border:1px solid var(--line);
+    background:rgba(25,39,68,.9);
+    border-radius:14px;
+    transition:border-color .2s;
+}
+
+.pokedex-search:focus-within {
+    border-color:var(--yellow);
+}
+
+.pokedex-search>i {
+    color:var(--yellow);
+}
+
+.pokedex-search input {
+    width:100%;
+    min-width:0;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
+    font-size:12px;
+}
+
+.pokedex-search input::placeholder {
+    color:#8393b3;
+}
+
+.pokedex-search kbd {
+    color:#9aacca;
+    background:#253550;
+    border:1px solid var(--line);
+    border-radius:5px;
+    font-size:10px;
+    padding:3px 7px;
+}
+
+.type-filters {
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:31px;
+}
+
+.filter-chip {
+    border:1px solid var(--line);
+    border-radius:100px;
+    background:#15233f;
+    color:#9eafd0;
+    padding:10px 16px;
+    font-size:12px;
+    font-weight:700;
+    transition:background .2s,color .2s,transform .2s;
+}
+
+.filter-chip:hover {
+    transform:translateY(-2px);
+    color:#fff;
+    background:#23385d;
+}
+
+/* JavaScript přepíná selected podle právě zvoleného filtru. */
+.filter-chip.selected {
+    background:var(--yellow);
+    color:#141c2c;
+    border-color:var(--yellow);
+}
+
+/* --type-color dědí vnitřní části karty; konkrétní typ ji přepíše níže. */
+.pokemon-card {
+    --type-color:#ffcd37;
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    padding:19px;
+    background:linear-gradient(150deg,#1c2b4b,#14203a);
+    border:1px solid rgba(182,204,255,.1);
+    border-radius:20px;
+    transition:transform .35s,border-color .35s,box-shadow .35s;
+}
+
+/* Při najetí se karta zvedne, zvýrazní rámeček a dostane barevný stín. */
+.pokemon-card:hover {
+    transform:translateY(-10px);
+    border-color:var(--type-color);
+    box-shadow:0 18px 55px rgba(0,0,0,.28),0 0 25px color-mix(in srgb,var(--type-color) 12%,transparent);
+}
+
+.card-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#879abd;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1.5px;
+}
+
+.card-top i {
+    font-size:21px;
+    color:rgba(255,255,255,.17);
+}
+
+/* color-mix smíchá barvu typu s průhledností pro jemné podbarvení. */
+.card-visual {
+    position:relative;
+    height:215px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:12px 0 18px;
+    border-radius:15px;
+    background:radial-gradient(circle at 50% 55%,color-mix(in srgb,var(--type-color) 22%,transparent),transparent 68%),linear-gradient(145deg,#1c3151,#17233e);
+}
+
+.card-ring {
+    position:absolute;
+    width:165px;
+    height:165px;
+    border:2px solid color-mix(in srgb,var(--type-color) 28%,transparent);
+    border-radius:50%;
+    box-shadow:0 0 0 22px color-mix(in srgb,var(--type-color) 4%,transparent);
+}
+
+/* object-fit:contain zobrazí celý obrázek bez oříznutí. */
+.card-visual img {
+    position:relative;
+    z-index:2;
+    width:85%;
+    height:205px;
+    object-fit:contain;
+    filter:drop-shadow(0 14px 15px rgba(0,0,0,.24));
+    transition:transform .4s;
+}
+
+.pokemon-card:hover img {
+    transform:translateY(-8px) scale(1.09);
+}
+
+.card-detail h3 {
+    font-weight:900;
+    font-size:25px;
+    margin-bottom:5px;
+}
+
+.card-detail p {
+    font-size:12px;
+    color:var(--muted);
+    min-height:37px;
+    line-height:1.6;
+    margin-bottom:15px;
+}
+
+.type-label {
+    display:inline-block;
+    border-radius:8px;
+    background:color-mix(in srgb,var(--type-color) 16%,transparent);
+    color:var(--type-color);
+    font-size:11px;
+    font-weight:800;
+    padding:8px 12px;
+}
+
+.card-bottom {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:21px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    color:#8395b6;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1.3px;
+}
+
+.card-bottom i {
+    font-size:17px;
+    color:var(--type-color);
+}
+
+/* Barvy osmi použitých typů. Název třídy sestavuje Jinja2 z p.kind. */
+.type-electric {
+    --type-color:#ffd44e;
+}
+
+.type-fire {
+    --type-color:#ff8564;
+}
+
+.type-grass {
+    --type-color:#68e6a5;
+}
+
+.type-water {
+    --type-color:#69baff;
+}
+
+.type-ghost {
+    --type-color:#c39aff;
+}
+
+.type-normal {
+    --type-color:#d1d5e0;
+}
+
+.type-fighting {
+    --type-color:#f39b72;
+}
+
+.type-dragon {
+    --type-color:#9eabff;
+}
+
+.result-count {
+    text-align:center;
+    color:#8092b4;
+    font-size:12px;
+    margin:30px 0 0;
+}
+
+.no-results {
+    text-align:center;
+    padding:65px 15px;
+    color:var(--muted);
+}
+
+/* Prázdný stav zůstává skrytý, dokud JavaScript nenajde nula výsledků. */
+.no-results[hidden] {
+    display:none!important;
+}
+
+.no-results i {
+    font-size:40px;
+    color:var(--yellow);
+}
+
+.no-results h3 {
+    font-size:24px;
+    color:#fff;
+    margin-top:15px;
+}
+
+
+/* 06 — DALŠÍ FUNKCE A CTA */
+
+.explore-section {
+    background:linear-gradient(160deg,rgba(20,34,63,.96),rgba(10,17,35,.95));
+    border-top:1px solid var(--line);
+}
+
+/* Informační karty jsou zatím ukázkou připravovaných funkcí. */
+.feature-card {
+    height:100%;
+    padding:32px;
+    border:1px solid var(--line);
+    border-radius:21px;
+    background:linear-gradient(145deg,rgba(34,53,87,.78),rgba(17,29,53,.88));
+    transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+
+.feature-card:hover {
+    transform:translateY(-8px);
+    border-color:rgba(255,206,55,.3);
+    box-shadow:0 20px 40px rgba(0,0,0,.18);
+}
+
+.feature-number {
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:2px;
+    color:#8298bf;
+}
+
+.feature-symbol {
+    width:72px;
+    height:72px;
+    margin:29px 0;
+    border-radius:20px;
+    display:grid;
+    place-items:center;
+    font-size:32px;
+}
+
+.symbol-electric {
+    background:rgba(255,205,55,.13);
+    color:#ffcf46;
+}
+
+.symbol-stats {
+    background:rgba(105,170,255,.13);
+    color:#85b9ff;
+}
+
+.symbol-evolve {
+    background:rgba(183,126,255,.13);
+    color:#caa0ff;
+}
+
+.feature-card h3 {
+    font-weight:800;
+    font-size:24px;
+    margin-bottom:12px;
+}
+
+.feature-card p {
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.85;
+    min-height:74px;
+}
+
+.coming-soon {
+    display:inline-flex;
+    gap:12px;
+    align-items:center;
+    margin-top:18px;
+    color:var(--yellow);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.3px;
+}
+
+.closing-section {
+    padding:75px 0 105px;
+    background:rgba(10,17,35,.94);
+}
+
+/* Závěrečný panel: overflow skryje část velkého dekorativního Pokéballu. */
+.closing-panel {
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    border:1px solid rgba(255,205,55,.18);
+    border-radius:28px;
+    padding:65px 55px;
+    background:radial-gradient(circle at 80% 40%,rgba(255,205,55,.11),transparent 40%),linear-gradient(120deg,#1c3158,#14213d);
+}
+
+.closing-content {
+    position:relative;
+    z-index:2;
+    max-width:620px;
+}
+
+.closing-panel h2 {
+    font-size:clamp(33px,4vw,52px);
+    font-weight:900;
+    letter-spacing:-1.5px;
+    margin:12px 0;
+}
+
+.closing-panel h2 span {
+    color:var(--yellow);
+}
+
+.closing-panel p {
+    color:#b0bed8;
+    margin-bottom:28px;
+}
+
+.closing-ball {
+    position:absolute;
+    width:370px;
+    height:370px;
+    border-radius:50%;
+    right:-35px;
+    top:-50px;
+    transform:rotate(-30deg);
+    opacity:.11;
+    background:linear-gradient(#ff625a 0 46%,#090f20 46% 54%,#fff 54%);
+    border:15px solid #080e20;
+    animation:slowSpin 50s linear infinite;
+}
+
+
+/* 07 — FOOTER */
+
+/* Společná patička pro všechny stránky dědící base.html. */
+.site-footer {
+    background:#080e1c;
+    border-top:1px solid var(--line);
+    padding:60px 0 24px;
+}
+
+.footer-main {
+    display:flex;
+    justify-content:space-between;
+    gap:40px;
+    flex-wrap:wrap;
+}
+
+.footer-main p {
+    max-width:350px;
+    margin:20px 0 0;
+    color:#8597b7;
+    font-size:12px;
+    line-height:1.9;
+}
+
+.footer-nav {
+    display:flex;
+    align-items:flex-start;
+    gap:30px;
+    flex-wrap:wrap;
+}
+
+.footer-nav a {
+    color:#a0afcb;
+    font-size:13px;
+    font-weight:700;
+}
+
+.footer-nav a:hover {
+    color:var(--yellow);
+}
+
+.footer-base {
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    flex-wrap:wrap;
+    border-top:1px solid var(--line);
+    padding-top:24px;
+    margin-top:45px;
+    color:#8293b1;
+    font-size:11px;
+}
+
+.legal {
+    color:#62728f;
+    font-size:10px;
+    line-height:1.7;
+    margin-top:20px;
+}
+
+
+/* 08 — SCROLL ANIMACE, MOBIL A PŘÍSTUPNOST */
+
+/* Bez JavaScriptu je obsah viditelný. Teprve js-motion aktivuje skrývání. */
+.reveal {
+    opacity:1;
+    transform:none;
+}
+
+.js-motion .reveal {
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .75s ease,transform .75s cubic-bezier(.2,.8,.2,1);
+}
+
+/* IntersectionObserver přidá visible při vstupu prvku do sledované oblasti. */
+.js-motion .reveal.visible {
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Úpravy pro menší desktop: zmenšení titulku a ilustrace. */
+@media(max-width:1199px) {
+    .hero-layout {
+        grid-template-columns:1fr 1fr;
+    }
+    .hero h1 {
+        font-size:clamp(44px,5vw,66px);
+    }
+    .hero-art {
+        height:460px;
+    }
+    .hero-info {
+        padding:10px 12px;
+    }
+}
+
+/* Tablet: banner pod sebou, rozbalovací menu a menší mezery. */
+@media(max-width:991px) {
+    .site-nav .navbar-collapse {
+        padding:20px 0 10px;
+    }
+    .nav-links {
+        gap:5px;
+    }
+    .nav-action {
+        margin-top:12px;
+    }
+    .hero-layout {
+        grid-template-columns:1fr;
+        padding-top:70px;
+        padding-bottom:55px;
+        gap:15px;
+    }
+    .hero-copy {
+        text-align:center;
+    }
+    .hero-copy>p {
+        margin-left:auto;
+        margin-right:auto;
+    }
+    .hero-actions,.hero-metrics {
+        justify-content:center;
+    }
+    .hero-art {
+        width:min(100%,560px);
+        margin:auto;
+    }
+    .hero {
+        min-height:0;
+    }
+    .section-pad {
+        padding:80px 0;
+    }
+}
+
+/* Telefon: menší ilustrace, titulek a dekorace závěrečného panelu. */
+@media(max-width:767px) {
+    .hero h1 {
+        font-size:clamp(42px,9vw,60px);
+        letter-spacing:-2px;
+    }
+    .hero-art {
+        height:350px;
+    }
+    .hero-pikachu {
+        width:65%;
+        left:5%;
+        bottom:0;
+    }
+    .hero-charizard {
+        width:65%;
+        right:0;
+    }
+    .art-pokeball {
+        width:260px;
+        height:260px;
+    }
+    .hero-info {
+        transform:scale(.85);
+    }
+    .info-electric {
+        left:0;
+        top:0;
+    }
+    .info-fire {
+        right:0;
+        bottom:0;
+    }
+    .hero-bottom {
+        padding:15px 5%;
+    }
+    .hero-bottom span:last-child {
+        display:none;
+    }
+    .section-top h2 {
+        font-size:36px;
+    }
+    .closing-panel {
+        padding:50px 27px;
+    }
+    .closing-ball {
+        right:-210px;
+    }
+    .footer-nav {
+        gap:20px;
+    }
+}
+
+/* Úzký telefon: tlačítka přes celou šířku a kompaktní text. */
+@media(max-width:480px) {
+    .brand {
+        font-size:21px;
+    }
+    .brand-ball {
+        width:36px;
+        height:36px;
+    }
+    .hero-layout {
+        padding-top:52px;
+    }
+    .hero h1 {
+        font-size:42px;
+    }
+    .hero-copy>p {
+        font-size:13px;
+    }
+    .hero-actions {
+        flex-direction:column;
+    }
+    .primary-action,.secondary-action {
+        width:100%;
+    }
+    .hero-metrics {
+        gap:24px;
+    }
+    .hero-metrics strong {
+        font-size:24px;
+    }
+    .hero-metrics small {
+        font-size:9px;
+    }
+    .hero-art {
+        height:290px;
+    }
+    .hero-info {
+        font-size:10px;
+    }
+    .art-pokeball {
+        width:220px;
+        height:220px;
+    }
+    .pokedex-search {
+        width:100%;
+    }
+    .filter-chip {
+        font-size:11px;
+        padding:9px 12px;
+    }
+    .card-visual {
+        height:220px;
+    }
+    .section-pad {
+        padding:65px 0;
+    }
+}
+
+/* 09 — PŘIHLÁŠENÍ: karta, vstupy a odhlašovací tlačítko */
+
+.auth-section {
+    padding: 80px 16px;
+    min-height: 65vh;
+}
+
+.auth-card {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 42px);
+    border: 1px solid #343d60;
+    border-radius: 24px;
+    background: #11172c;
+}
+
+.auth-card h1 {
+    font-size: clamp(26px, 5vw, 36px);
+    margin: 18px 0;
+}
+
+.auth-card p {
+    color: #b6bfd8;
+}
+
+.auth-card label {
+    display: block;
+    margin: 20px 0 8px;
+}
+
+.auth-card .form-control {
+    background: #080d20;
+    border-color: #536080;
+    color: #fff;
+    padding: 12px;
+}
+
+.auth-card .form-control:focus {
+    border-color: #9a86ff;
+    box-shadow: 0 0 0 3px #9a86ff33;
+}
+
+.auth-card .primary-action {
+    width: 100%;
+    justify-content: center;
+    margin: 26px 0 20px;
+}
+
+.auth-card > a {
+    color: #c5baff;
+}
+
+.auth-logout {
+    background: transparent;
+    border: 0;
+    font: inherit;
+}
+
+/* Respektuje systémové omezení pohybu: téměř vypne animace a nechá obsah viditelný. */
+@media(prefers-reduced-motion:reduce) {
+    *,*::before,*::after {
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        scroll-behavior:auto!important;
+        transition-duration:.01ms!important;
+    }
+    .js-motion .reveal {
+        opacity:1;
+        transform:none;
+    }
+    .cursor-glow {
+        display:none;
+    }
+}

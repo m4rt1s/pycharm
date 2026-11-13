@@ -1,0 +1,38 @@
+<!-- MENU: společná navigace -->
+{# Bootstrap navbar-expand-lg zobrazí na menších šířkách rozbalovací menu. #}
+<nav class="navbar navbar-expand-lg site-nav" aria-label="Hlavní navigace">
+  <div class="container nav-inner">
+    {# Logo odkazuje na Flask funkci index; Pokéball tvoří CSS a vnořené spany. #}
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-ball"><span></span></span><span>POKÉ<span class="accent">APP</span><small>YOUR POKÉMON UNIVERSE</small></span></a>
+    {# data-bs-target míří na #siteMenu. Bootstrap JS ovládá collapse i aria-expanded. #}
+    <button class="navbar-toggler nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#siteMenu" aria-controls="siteMenu" aria-expanded="false" aria-label="Otevřít menu"><i class="bi bi-list"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="siteMenu">
+      {# Odkazy s # míří na sekce domovské stránky. active zvýrazní aktuální stránku. #}
+      <ul class="navbar-nav mx-auto nav-links">
+        <li class="nav-item">
+          <a class="nav-link{% if request.endpoint == 'index' %} active{% endif %}" href="{{ url_for('index') }}#home">Domů</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#pokedex">Pokédex</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}#explore">Objevovat</a>
+        </li>
+        {% if current_user %}
+          <li class="nav-item"><span class="nav-link">Trenér {{ current_user.nickname }}</span>
+          </li>
+          <li class="nav-item">
+            <form method="post" action="{{ url_for('auth.logout') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="nav-link auth-logout" type="submit">Odhlásit se</button>
+            </form>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link{% if request.endpoint == 'auth.login' %} active{% endif %}" href="{{ url_for('auth.login') }}">Přihlásit se</a>
+          </li>
+        {% endif %}
+      </ul>
+      <a class="nav-action" href="{{ url_for('index') }}#pokedex"><i class="bi bi-search"></i> Prozkoumat <i class="bi bi-arrow-up-right"></i></a>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,120 @@
+<!-- HLAVNÍ OBSAH: Pokédex a informační sekce -->
+<section class="pokedex-section section-pad" id="pokedex">
+  <div class="container">
+    {# Nadpis a hledání. ID pokemonSearch používá JavaScript pro poslech změn vstupu. #}
+    <div class="section-top reveal">
+      <div>
+        <div class="section-kicker"><span>01</span> / OBJEVUJ
+        </div>
+        <h2>Seznam se s <em>Pokémony.</em>
+        </h2>
+        <p>Každý Pokémon má svůj příběh. Který bude tvůj favorit?</p>
+      </div>
+      <div class="pokedex-search"><i class="bi bi-search"></i>
+        <input type="search" id="pokemonSearch" placeholder="Jméno, číslo nebo typ..." aria-label="Vyhledat Pokémona"><kbd>/</kbd>
+      </div>
+    </div>
+    {# data-filter obsahuje hodnotu typu; all ruší typové omezení. aria-pressed hlásí výběr. #}
+    <div class="type-filters reveal" role="group" aria-label="Filtrovat podle typu">
+      <button class="filter-chip selected" data-filter="all" aria-pressed="true">Všechny typy</button>
+      <button class="filter-chip" data-filter="electric" aria-pressed="false">⚡ Electric</button>
+      <button class="filter-chip" data-filter="fire" aria-pressed="false">🔥 Fire</button>
+      <button class="filter-chip" data-filter="water" aria-pressed="false">💧 Water</button>
+      <button class="filter-chip" data-filter="grass" aria-pressed="false">🌿 Grass</button>
+      <button class="filter-chip" data-filter="ghost" aria-pressed="false">👻 Ghost</button>
+    </div>
+    <div class="row g-4" id="pokemonGrid">
+      {# Jinja2 opakuje kartu pro každý slovník z app.py. p označuje právě zpracovaného Pokémona. #}
+      {% for p in pokemon %}
+        <div class="col-12 col-sm-6 col-lg-3 pokemon-item reveal" data-name="{{ p.name|lower }}" data-id="{{ p.id }}" data-type="{{ p.types|lower }}" data-kind="{{ p.kind }}">
+          {# data-* na rodiči poskytují JS jméno, číslo a typy; type-p.kind vybírá barvu přes CSS. #}
+          <article class="pokemon-card type-{{ p.kind }}">
+            {# format doplní číslo na čtyři místa: například 25 se zobrazí jako #0025. #}
+            <div class="card-top"><span>#{{ '%04d'|format(p.id) }}</span><i class="bi bi-record-circle"></i>
+            </div>
+            {# loading=lazy odloží obrázky mimo obrazovku. alt poskytne textový název obrázku. #}
+            <div class="card-visual"><span class="card-ring"></span><img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy">
+            </div>
+            <div class="card-detail">
+              <h3>{{ p.name }}</h3>
+              <p>{{ p.description }}</p>
+              <span class="type-label">{{ p.types }}</span>
+            </div>
+            {# Řádek PROFILE je dekorativní; karta zatím neotevírá detail Pokémona. #}
+            <div class="card-bottom"><span>POKÉMON PROFILE</span><i class="bi bi-arrow-up-right"></i>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+    {# hidden skryje hlášku. JS ji zobrazí, pokud neodpovídá ani jedna karta. #}
+    <div class="no-results" id="noResults" hidden><i class="bi bi-search"></i>
+      <h3>Žádný Pokémon nenalezen</h3>
+      <p>Zkus jiný název, číslo nebo typ.</p>
+    </div>
+    {# length spočítá počáteční počet Pokémonů; po filtrování text aktualizuje JavaScript. #}
+    <p class="result-count" id="resultCount">Zobrazeno {{ pokemon|length }} Pokémonů</p>
+  </div>
+</section>
+<!-- EXPLORE: další oblasti budoucí aplikace -->
+{# Typy, statistiky a evoluce jsou zatím informační nabídka připravovaných funkcí. #}
+<section class="explore-section section-pad" id="explore">
+  <div class="container">
+    <div class="section-top reveal">
+      <div>
+        <div class="section-kicker"><span>02</span> / TVOJE DOBRODRUŽSTVÍ
+        </div>
+        <h2>Více než jen <em>Pokédex.</em>
+        </h2>
+        <p>Postupně zde objevíš další možnosti svého Pokémon světa.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 reveal">
+        <article class="feature-card"><span class="feature-number">01 / TYPES</span>
+          <div class="feature-symbol symbol-electric"><i class="bi bi-lightning-charge-fill"></i>
+          </div>
+          <h3>18 typů Pokémonů</h3>
+          <p>Od elektrických útoků po tajemné duchy. Poznej silné i slabé stránky jednotlivých typů.</p>
+          <span class="coming-soon">PŘIPRAVUJEME <i class="bi bi-arrow-up-right"></i></span>
+        </article>
+      </div>
+      <div class="col-md-4 reveal">
+        <article class="feature-card"><span class="feature-number">02 / STATS</span>
+          <div class="feature-symbol symbol-stats"><i class="bi bi-bar-chart-fill"></i>
+          </div>
+          <h3>Detailní statistiky</h3>
+          <p>Porovnávej rychlost, útok, obranu i výdrž. Najdi Pokémona, který nejlépe sedí tvému stylu.</p>
+          <span class="coming-soon">PŘIPRAVUJEME <i class="bi bi-arrow-up-right"></i></span>
+        </article>
+      </div>
+      <div class="col-md-4 reveal">
+        <article class="feature-card"><span class="feature-number">03 / EVOLUTION</span>
+          <div class="feature-symbol symbol-evolve"><i class="bi bi-stars"></i>
+          </div>
+          <h3>Evoluční řady</h3>
+          <p>Sleduj, jak se Pokémoni mění a získávají nové schopnosti v dalších evolučních stupních.</p>
+          <span class="coming-soon">PŘIPRAVUJEME <i class="bi bi-arrow-up-right"></i></span>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- BOTTOM CTA: vizuální závěr hlavní stránky -->
+{# Závěrečný panel vrací návštěvníka odkazem zpět na #pokedex. #}
+<section class="closing-section">
+  <div class="container">
+    <div class="closing-panel reveal">
+      <div class="closing-ball" aria-hidden="true">
+      </div>
+      <div class="closing-content">
+        <div class="section-kicker">TVOJE CESTA ZAČÍNÁ TADY
+        </div>
+        <h2>Připraven na další <span>dobrodružství?</span>
+        </h2>
+        <p>Svět Pokémonů čeká na tebe. Začni objevovat ještě dnes.</p>
+        <a href="#pokedex" class="primary-action">Zpět do Pokédexu <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>

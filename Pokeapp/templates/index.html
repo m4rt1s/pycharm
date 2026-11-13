@@ -1,0 +1,10 @@
+{# Dědíme base.html: nemusíme znovu psát head, navigaci, banner ani patičku. #}
+{% extends 'base.html' %}
+{# Přepíšeme titulek zobrazený na kartě prohlížeče. #}
+{% block title %}
+  PokéApp | Objev svět Pokémonů
+{% endblock %}
+{# Do hlavního obsahu vložíme komponentu main.html. Data pokemon už dodal Flask. #}
+{% block content %}
+  {% include 'components/main.html' %}
+{% endblock %}
